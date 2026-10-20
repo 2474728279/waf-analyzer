@@ -1,93 +1,75 @@
 # 日志分析平台
 
+基于大语言模型(LLM)的 WAF 日志智能分析平台,支持对雷池(SafeLine)等 WAF 设备日志的采集、解析与自动化分析,并生成可读性强的分析报告。
 
+## 功能特性
 
-## Getting started
+- **多 LLM 支持**:Claude / OpenAI / Ollama,可灵活切换
+- **WAF 设备适配**:内置雷池(SafeLine)适配器,可扩展其他设备
+- **智能分析流水线**:基于 LangGraph 的多智能体分析
+- **分析能力**:
+  - 覆盖率计算
+  - IP 画像
+  - 攻击模式提取
+  - 扫描器检测
+  - 子网分组
+- **报告生成**:自动生成 Word(docx)分析报告
+- **可视化看板**:React + Ant Design 前端
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## 技术栈
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+| 层 | 技术 |
+| --- | --- |
+| 后端 | Python / FastAPI / SQLAlchemy / PostgreSQL / Redis / LangGraph |
+| 前端 | React 19 / Vite / TypeScript / Ant Design |
+| LLM | Claude / OpenAI / Ollama |
+| 部署 | Docker Compose |
 
-## Add your files
-
-* [Create](https://docs.gitlab.com/user/project/repository/web_editor/#create-a-file) or [upload](https://docs.gitlab.com/user/project/repository/web_editor/#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+## 目录结构
 
 ```
-cd existing_repo
-git remote add origin https://git.in.chaitin.net/pengbiao.wang/waf-analyzer.git
-git branch -M main
-git push -uf origin main
+.
+├── backend/           # FastAPI 后端
+│   └── app/
+│       ├── agents/        # LangGraph 分析智能体
+│       ├── analyzers/     # 各类分析器
+│       ├── llm/           # LLM 适配(Claude / OpenAI / Ollama)
+│       ├── waf_adapters/  # WAF 设备适配器
+│       ├── api/           # 路由
+│       ├── models/        # 数据模型
+│       └── services/      # 业务服务
+├── frontend/          # React 前端
+└── docker-compose.yml # 容器编排
 ```
 
-## Integrate with your tools
+## 快速开始
 
-* [Set up project integrations](https://git.in.chaitin.net/pengbiao.wang/waf-analyzer/-/settings/integrations)
+### 环境要求
 
-## Collaborate with your team
+- Docker 与 Docker Compose
+- LLM API Key(任选其一):
+  - `ANTHROPIC_API_KEY`
+  - `OPENAI_API_KEY`
 
-* [Invite team members and collaborators](https://docs.gitlab.com/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/user/project/merge_requests/creating_merge_requests/)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/user/project/issues/managing_issues/#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+### 启动
 
-## Test and Deploy
+```bash
+export ANTHROPIC_API_KEY=sk-ant-xxx   # 或 OPENAI_API_KEY
+docker compose up -d --build
+```
 
-Use the built-in continuous integration in GitLab.
+启动后访问:
 
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/topics/autodevops/requirements/)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ci/environments/protected_environments/)
+- 前端:http://localhost:3000
+- 后端 API:http://localhost:8000
 
-***
+## 配置
 
-# Editing this README
+主要环境变量:
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+| 变量 | 说明 |
+| --- | --- |
+| `WAF_DATABASE_URL` | PostgreSQL 连接串 |
+| `WAF_REDIS_URL` | Redis 连接串 |
+| `ANTHROPIC_API_KEY` | Anthropic API Key |
+| `OPENAI_API_KEY` | OpenAI API Key |
