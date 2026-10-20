@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - WAF_DATABASE_URL=postgresql+asyncpg://wafagent:wafagent@db:5432/wafagent
+      - WAF_REDIS_URL=redis://redis:6379/0
+      - WAF_ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - WAF_OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - upload_data:/tmp/waf-agent/uploads
+      - report_data:/tmp/waf-agent/reports
+    depends_on:
+      - db
+      - redis
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: wafagent
+      POSTGRES_USER: wafagent
+      POSTGRES_PASSWORD: wafagent
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  pg_data:
+  upload_data:
+  report_data:
